@@ -32,20 +32,35 @@ var forecast = new Forecast({
 
 app.set("view engine", "ejs");
 
- geocoder.geocode("1364 N Hoyne ave Chicago", function(err, data){
+ geocoder.geocode("Chicago", function(err, data){
         if(err){
             console.log(err);
         }
-        console.log(data[0].geometry);
+        var lat = (data[0].latitude);
+        var long = (data[0].longitude);
+        forecast.get([lat, long], function(err, weather){
+            if(err){
+                console.log(err);
+            }
+            var currentTemp = weather.currently.temperature;
+            console.log(currentTemp);
+        });
     });
 
 app.get("/", function(req, res){
-    forecast.get([41.881832, -87.623177], function(err, weather){
-    if(err){
-        console.log(err);
-    } 
-    var currentTemp = weather.currently.temperature;
-    res.render("home", {currentTemp: currentTemp});
+    geocoder.geocode("Chicago", function(err, data){
+        if(err){
+            console.log(err);
+        }
+        var lat = (data[0].latitude);
+        var long = (data[0].longitude);
+        forecast.get([lat, long], function(err, weather){
+            if(err){
+                console.log(err);
+            }
+            var currentTemp = weather.currently.temperature;
+            res.render("home", {currentTemp: currentTemp});
+        });
     });
 });
 
